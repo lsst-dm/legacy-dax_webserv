@@ -1,5 +1,6 @@
 setupRequired(db)
 setupRequired(flask)
+setupRequired(dbserv)
 setupRequired(imgserv)
 setupRequired(metaserv)
 setupRequired(mysqlpython)
