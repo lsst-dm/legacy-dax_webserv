@@ -27,21 +27,39 @@ This is RESTful LSST Data Access Web Server. It handles /meta, /image, and /db
 """
 
 from flask import Flask
-from lsst.metaserv import metaREST_v0
-from lsst.imgserv import imageREST_v0
 from lsst.dbserv import dbREST_v0
+from lsst.imgserv import imageREST_v0
+from lsst.metaserv import metaREST_v0
 
 
 app = Flask(__name__)
 
 @app.route('/')
-def index():
+def getRoot():
     return '''LSST Web Service here. I currently support: /meta, /image, /db.
 '''
 
-app.register_blueprint(metaREST_v0.metaREST, url_prefix='/meta')
-app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image')
-app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db')
+@app.route('/db')
+def getDb():
+    '''Lists supported versions for /db.'''
+    return '''v0
+'''
+
+@app.route('/image')
+def getImage():
+    '''Lists supported versions for /image.'''
+    return '''v0
+'''
+
+@app.route('/meta')
+def getMeta():
+    '''Lists supported versions for /meta.'''
+    return '''v0
+'''
+
+app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0')
+app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image/v0')
+app.register_blueprint(metaREST_v0.metaREST, url_prefix='/meta/v0')
 
 if __name__ == '__main__':
     app.run(debug=True)
