@@ -26,7 +26,7 @@ This is RESTful LSST Data Access Web Server. It handles /meta, /image, and /db
 @author  Jacek Becla, SLAC
 """
 
-from flask import Flask
+from flask import Flask, request
 from lsst.dbserv import dbREST_v0
 from lsst.imgserv import imageREST_v0
 from lsst.metaserv import metaREST_v0
@@ -36,26 +36,37 @@ app = Flask(__name__)
 
 @app.route('/')
 def getRoot():
-    return '''LSST Web Service here. I currently support: /meta, /image, /db.
-'''
+    fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+    if fmt == 'text/html':
+        return ("LSST Web Service here. I currently support: "
+                "<a href='meta'>/meta</a>, "
+                "<a href='image'>/image</a>, "
+                "<a href='db'>/db</a.")
+    return "LSST Web Service here. I currently support: /meta, /image, /db."
 
 @app.route('/db')
 def getDb():
     '''Lists supported versions for /db.'''
-    return '''v0
-'''
+    fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+    if fmt == 'text/html':
+        return "<a href='db/v0'>v0</a>"
+    return "v0"
 
 @app.route('/image')
 def getImage():
     '''Lists supported versions for /image.'''
-    return '''v0
-'''
+    fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+    if fmt == 'text/html':
+        return "<a href='image/v0'>v0</a>"
+    return "v0"
 
 @app.route('/meta')
 def getMeta():
     '''Lists supported versions for /meta.'''
-    return '''v0
-'''
+    fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+    if fmt == 'text/html':
+        return "<a href='meta/v0'>v0</a>"
+    return "v0"
 
 app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0')
 app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image/v0')
