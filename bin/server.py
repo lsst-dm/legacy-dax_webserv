@@ -30,7 +30,7 @@ from flask import Flask, request
 from lsst.dbserv import dbREST_v0
 from lsst.imgserv import imageREST_v0
 from lsst.metaserv import metaREST_v0
-
+import json
 
 app = Flask(__name__)
 
@@ -50,7 +50,7 @@ def getDb():
     fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
     if fmt == 'text/html':
         return "<a href='db/v0'>v0</a>"
-    return "v0"
+    return json.dumps("v0")
 
 @app.route('/image')
 def getImage():
@@ -58,7 +58,7 @@ def getImage():
     fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
     if fmt == 'text/html':
         return "<a href='image/v0'>v0</a>"
-    return "v0"
+    return json.dumps("v0")
 
 @app.route('/meta')
 def getMeta():
@@ -66,7 +66,7 @@ def getMeta():
     fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
     if fmt == 'text/html':
         return "<a href='meta/v0'>v0</a>"
-    return "v0"
+    return json.dumps("v0")
 
 app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0')
 app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image/v0')
