@@ -1,4 +1,8 @@
 setupRequired(db)
+setupRequired(flask)
+setupRequired(dbserv)
+setupRequired(imgserv)
+setupRequired(metaserv)
 setupRequired(mysqlpython)
 
 envPrepend(LD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
