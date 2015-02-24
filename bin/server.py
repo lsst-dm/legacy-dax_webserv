@@ -31,6 +31,7 @@ from lsst.dbserv import dbREST_v0
 from lsst.imgserv import imageREST_v0
 from lsst.metaserv import metaREST_v0
 import json
+import sys
 
 app = Flask(__name__)
 
