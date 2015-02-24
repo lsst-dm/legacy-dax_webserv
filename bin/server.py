@@ -73,4 +73,8 @@ app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image/v0')
 app.register_blueprint(metaREST_v0.metaREST, url_prefix='/meta/v0')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    try:
+        app.run(debug=True)
+    except Exception, e:
+        print "Problem starting the server.", str(e)
+        sys.exit(1)
