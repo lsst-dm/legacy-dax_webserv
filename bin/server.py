@@ -27,11 +27,13 @@ This is RESTful LSST Data Access Web Server. It handles /meta, /image, and /db
 """
 
 from flask import Flask, request
+import json
+import logging as log
+import sys
+
 from lsst.dbserv import dbREST_v0
 from lsst.imgserv import imageREST_v0
 from lsst.metaserv import metaREST_v0
-import json
-import sys
 
 app = Flask(__name__)
 
@@ -74,6 +76,11 @@ app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image/v0')
 app.register_blueprint(metaREST_v0.metaREST, url_prefix='/meta/v0')
 
 if __name__ == '__main__':
+    log.basicConfig(
+        format='%(asctime)s %(name)s %(levelname)s: %(message)s',
+        datefmt='%m/%d/%Y %I:%M:%S',
+        level=log.DEBUG)
+
     try:
         app.run(debug=True)
     except Exception, e:
