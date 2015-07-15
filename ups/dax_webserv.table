@@ -1,8 +1,8 @@
 setupRequired(db)
 setupRequired(flask)
-setupRequired(dbserv)
-setupRequired(imgserv)
-setupRequired(metaserv)
+setupRequired(dax_dbserv)
+setupRequired(dax_imgserv)
+setupRequired(dax_metaserv)
 setupRequired(mysqlpython)
 
 envPrepend(LD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
