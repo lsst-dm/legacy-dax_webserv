@@ -31,9 +31,9 @@ import json
 import logging as log
 import sys
 
-from lsst.dbserv import dbREST_v0
-from lsst.imgserv import imageREST_v0
-from lsst.metaserv import metaREST_v0
+from lsst.dax.dbserv import dbREST_v0
+from lsst.dax.imgserv import imageREST_v0
+from lsst.dax.metaserv import metaREST_v0
 
 app = Flask(__name__)
 
