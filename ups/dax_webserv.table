@@ -1,5 +1,5 @@
 setupRequired(db)
-setupRequired(flask)
+setupRequired(anaconda)
 setupRequired(dax_dbserv)
 setupRequired(dax_imgserv)
 setupRequired(dax_metaserv)
