@@ -29,13 +29,34 @@ This is RESTful LSST Data Access Web Server. It handles /meta, /image, and /db
 from flask import Flask, request
 import json
 import logging as log
+import os
 import sys
 
 from lsst.dax.dbserv import dbREST_v0
 from lsst.dax.imgserv import imageREST_v0
 from lsst.dax.metaserv import metaREST_v0
 
+import ConfigParser
+import sqlalchemy
+from sqlalchemy.engine.url import URL
+
+
+def initEngine():
+    config = ConfigParser.ConfigParser()
+    defaults_file = os.path.expanduser("~/.lsst/dbAuth-dbServ.txt")
+    config.readfp(open(defaults_file))
+    db_config = dict(config.items("mysql"))
+    # Translate user name
+    db_config["username"] = db_config["user"]
+    del db_config["user"]
+    # SQLAlchemy part
+    url = URL("mysql",**db_config)
+    return sqlalchemy.create_engine(url)
+
+engine = initEngine()
+
 app = Flask(__name__)
+app.config["default_engine"] = engine
 
 @app.route('/')
 def getRoot():
