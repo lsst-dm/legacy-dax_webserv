@@ -35,25 +35,12 @@ import sys
 from lsst.dax.dbserv import dbREST_v0
 from lsst.dax.imgserv import imageREST_v0
 from lsst.dax.metaserv import metaREST_v0
-
-import ConfigParser
-import sqlalchemy
-from sqlalchemy.engine.url import URL
+from lsst.db.engineFactory import getEngineFromFile
 
 
-def initEngine():
-    config = ConfigParser.ConfigParser()
-    defaults_file = os.path.expanduser("~/.lsst/dbAuth-dbServ.txt")
-    config.readfp(open(defaults_file))
-    db_config = dict(config.items("mysql"))
-    # Translate user name
-    db_config["username"] = db_config["user"]
-    del db_config["user"]
-    # SQLAlchemy part
-    url = URL("mysql",**db_config)
-    return sqlalchemy.create_engine(url)
+defaults_file = "~/.lsst/dbAuth-dbServ.ini"
 
-engine = initEngine()
+engine = getEngineFromFile(defaults_file)
 
 app = Flask(__name__)
 app.config["default_engine"] = engine
