@@ -44,6 +44,7 @@ engine = getEngineFromFile(defaults_file)
 
 app = Flask(__name__)
 app.config["default_engine"] = engine
+app.config["dax.imgserv.default_source"] = "/lsst7/releaseW13EP"
 
 @app.route('/')
 def getRoot():
