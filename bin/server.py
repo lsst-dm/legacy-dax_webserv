@@ -38,9 +38,9 @@ from lsst.dax.metaserv import metaREST_v0
 from lsst.db.engineFactory import getEngineFromFile
 
 try:
-    from ConfigParser import ConfigParser, NoSectionError
+    from ConfigParser import RawConfigParser, NoSectionError
 except ImportError:
-    from configparser import ConfigParser, NoSectionError
+    from configparser import RawConfigParser, NoSectionError
 
 log.basicConfig(
     format='%(asctime)s %(name)s %(levelname)s: %(message)s',
@@ -53,10 +53,7 @@ engine = getEngineFromFile(defaults_file)
 
 app = Flask(__name__)
 
-parser = ConfigParser()
-
-# Preserve case
-parser.optionxform = str
+parser = RawConfigParser()
 
 with open(os.path.expanduser(defaults_file)) as cfg:
     parser.readfp(cfg, defaults_file)
