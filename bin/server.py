@@ -54,6 +54,10 @@ engine = getEngineFromFile(defaults_file)
 app = Flask(__name__)
 
 parser = ConfigParser()
+
+# Preserve case
+parser.optionxform = str
+
 with open(os.path.expanduser(defaults_file)) as cfg:
     parser.readfp(cfg, defaults_file)
 
