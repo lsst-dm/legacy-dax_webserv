@@ -1,8 +1,7 @@
 FROM ubuntu:16.04
 MAINTAINER Brian Van Klaveren <bvan@slac.stanford.edu>
 
-RUN apt-get -y update &&\
-        apt-get -y upgrade &&\
+RUN apt-get --yes update && \
         apt-get --yes install bash \
         bison \
         bzip2 \

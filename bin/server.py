@@ -29,21 +29,52 @@ This is RESTful LSST Data Access Web Server. It handles /meta, /image, and /db
 from flask import Flask, request
 import json
 import logging as log
+import os
 import sys
 
 from lsst.dax.dbserv import dbREST_v0
 from lsst.dax.imgserv import imageREST_v0
 from lsst.dax.metaserv import metaREST_v0
-from lsst.db.engineFactory import getEngineFromFile
+from sqlalchemy import create_engine
 
+try:
+    from ConfigParser import RawConfigParser, NoSectionError
+except ImportError:
+    from configparser import RawConfigParser, NoSectionError
 
-defaults_file = "~/.lsst/dbAuth-dbServ.ini"
+log.basicConfig(
+    format='%(asctime)s %(name)s %(levelname)s: %(message)s',
+    datefmt='%m/%d/%Y %I:%M:%S',
+    level=log.DEBUG)
 
-engine = getEngineFromFile(defaults_file)
+defaults_file = os.environ.get("WEBSERV_CONFIG", "~/.lsst/webserv.ini")
+WERKZEUG_PREFIX = "dax.webserv.werkzeug."
 
 app = Flask(__name__)
-app.config["default_engine"] = engine
-app.config["dax.imgserv.default_source"] = "/lsst7/releaseW13EP"
+
+# Initialize configuration
+webserv_parser = RawConfigParser()
+webserv_parser.optionxform = str
+
+with open(os.path.expanduser(defaults_file)) as cfg:
+    webserv_parser.readfp(cfg, defaults_file)
+
+webserv_config = dict(webserv_parser.items("webserv"))
+default_db_url = webserv_config.get("dax.webserv.db.url")
+
+# Execute this last, we can overwrite anything we don't like
+
+app.config["default_engine"] = create_engine(default_db_url, pool_size=10)
+app.config["dax.imgserv.default_source"] = "datasets/sdss/preprocessed/dr7"
+app.config.update(webserv_config)
+
+# Extract werkzeug options, if necessary
+# It's okay that we put them into app.config above
+werkzeug_options = {}
+
+for key, value in webserv_config.items():
+    if key.startswith(WERKZEUG_PREFIX):
+        werkzeug_options[key[len(WERKZEUG_PREFIX):]] = value
 
 
 @app.route('/')
@@ -83,18 +114,18 @@ def route_metaserv():
         return "<a href='meta/v0'>v0</a>"
     return json.dumps("v0")
 
-app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0')
+app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0/tap')
 app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image/v0')
 app.register_blueprint(metaREST_v0.metaREST, url_prefix='/meta/v0')
 
 if __name__ == '__main__':
-    log.basicConfig(
-        format='%(asctime)s %(name)s %(levelname)s: %(message)s',
-        datefmt='%m/%d/%Y %I:%M:%S',
-        level=log.DEBUG)
-
     try:
-        app.run(debug=True)
+        app.run(
+                host=app.config.get("dax.webserv.host", "0.0.0.0"),
+                port=int(app.config.get("dax.webserv.port", "5000")),
+                debug=app.config.get("dax.webserv.debug", True),
+                **werkzeug_options
+                )
     except Exception, e:
         print "Problem starting the server.", str(e)
         sys.exit(1)

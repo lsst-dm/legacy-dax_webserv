@@ -76,7 +76,7 @@ fi
 # Build the release image
 
 printf "Building base image with tag: %s\n" $TAG
-docker build --no-cache=true --tag="$TAG" webserv_base
+docker build --no-cache=true --tag="$TAG" webserv_stack
 
 if [ $PUSH ] ; then
     printf "Pushing to Docker hub\n"
