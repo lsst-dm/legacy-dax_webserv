@@ -103,7 +103,7 @@ def route_metaserv():
         return "<a href='meta/v0'>v0</a>"
     return json.dumps("v0")
 
-app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0')
+app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0/tap')
 app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image/v0')
 app.register_blueprint(metaREST_v0.metaREST, url_prefix='/meta/v0')
 
