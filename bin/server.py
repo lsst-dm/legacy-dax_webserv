@@ -114,7 +114,7 @@ if __name__ == '__main__':
         level=log.DEBUG)
 
     try:
-        app.run(debug=True, host="0.0.0.0")
+        app.run(debug=True, host="127.0.0.1")
     except Exception, e:
         print "Problem starting the server.", str(e)
         sys.exit(1)
