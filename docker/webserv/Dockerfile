@@ -4,8 +4,8 @@ MAINTAINER Brian Van Klaveren <bvan@slac.stanford.edu>
 ARG LSST_STACK_DIR=/lsst/stack
 ARG EUPS_HOME=$LSST_STACK_DIR/.eups
 ARG EUPS_PRODUCT=dax_webserv
-ARG EUPS_TAG=
-ARG EUPS_PRODUCT_VERSION=12.1
+ARG EUPS_TAG=dax_latest
+ARG EUPS_PRODUCT_VERSION=
 ARG INSTALL_MINICONDA=Y
 
 ARG LSST_USER=webserv
@@ -35,9 +35,6 @@ RUN echo "Executing: eups distrib install ${EUPS_TAG:+"-t"} $EUPS_TAG $EUPS_PROD
         echo $INSTALL_MINICONDA | bash newinstall.sh && \
         /bin/bash -c 'source $LSST_STACK_DIR/loadLSST.bash; \
             eups distrib install ${EUPS_TAG:+"-t"} $EUPS_TAG $EUPS_PRODUCT $EUPS_PRODUCT_VERSION;'
-
-# Explicitly setup user and user groups
-RUN chown -R $LSST_USER:$LSST_GROUP $LSST_WORKSPACE
 
 # Webserv parts...
 # Setup nginx
