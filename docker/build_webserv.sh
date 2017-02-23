@@ -26,7 +26,7 @@
 
 set -e
 
-DEFAULT_TAG="webserv/webserv:webserv_stack"
+DEFAULT_TAG="webserv/webserv:webserv_latest"
 
 usage() {
   cat << EOD
@@ -37,19 +37,18 @@ usage() {
 
   Available options:
     -h          this message
-    -T          Docker Tag name. Defaults to $DEFAULT_TAG
-    -e          EUPS tag
-    -p          Push to dockerhub after build
+    -D          Docker Tag name. Defaults to $DEFAULT_TAG
+    -E          EUPS tag. Defaults to dax_latest.
 
 EOD
 }
 
 # get the options
-while getopts hT:p c; do
+while getopts hD:E: c; do
     case $c in
             h) usage ; exit 0 ;;
-            T) TAG="$OPTARG" ;;
-            e) EUPS_TAG="$OPTARG" ;;
+            D) TAG="$OPTARG" ;;
+            E) EUPS_TAG="$OPTARG" ;;
             p) PUSH=1 ;;
             \?) usage ; exit 2 ;;
     esac
@@ -67,18 +66,12 @@ if [ -z $TAG ]  ; then
     TAG=$DEFAULT_TAG
 fi
 
-if [ -z $EUPS_TAG ]  ; then
-    # Use defeault tag
-    EUPS_TAG=$DEFAULT_TAG
+if [ $EUPS_TAG ]  ; then
+    EUPS_TAG="EUPS_TAG=$EUPS_TAG"
 fi
-
 
 # Build the release image
 
 printf "Building base image with tag: %s\n" $TAG
-docker build --no-cache=true --tag="$TAG" webserv_stack
 
-if [ $PUSH ] ; then
-    printf "Pushing to Docker hub\n"
-    # docker push "$TAG"
-fi
+docker build --no-cache ${EUPS_TAG:+"--build-arg"} $EUPS_TAG --tag="$TAG" webserv
