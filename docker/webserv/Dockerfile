@@ -36,6 +36,8 @@ RUN echo "Executing: eups distrib install ${EUPS_TAG:+"-t"} $EUPS_TAG $EUPS_PROD
         /bin/bash -c 'source $LSST_STACK_DIR/loadLSST.bash; \
             eups distrib install ${EUPS_TAG:+"-t"} $EUPS_TAG $EUPS_PRODUCT $EUPS_PRODUCT_VERSION;'
 
+USER root
+
 # Webserv parts...
 # Setup nginx
 RUN apt-get update && apt-get --yes install nginx
