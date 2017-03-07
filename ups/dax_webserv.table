@@ -3,7 +3,7 @@ setupRequired(flask)
 setupRequired(dax_dbserv)
 setupRequired(dax_imgserv)
 setupRequired(dax_metaserv)
-setupRequired(mysqlpython)
+setupRequired(python_mysqlclient)
 
 envPrepend(LD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
 envPrepend(DYLD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
