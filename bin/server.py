@@ -23,7 +23,7 @@
 """
 This is RESTful LSST Data Access Web Server. It handles /meta, /image, and /db
 
-@author  Jacek Becla, SLAC
+@author  Jacek Becla, SLAC; Kenny W Lo, SLAC
 """
 
 from flask import Flask, request
@@ -50,7 +50,9 @@ log.basicConfig(
 defaults_file = os.environ.get("WEBSERV_CONFIG", "~/.lsst/webserv.ini")
 WERKZEUG_PREFIX = "dax.webserv.werkzeug."
 
-app = Flask(__name__)
+# instance folder not under version control
+i_path=os.path.join(os.path.expanduser("~"), ".lsst/instance")
+app = Flask(__name__, instance_path=i_path)
 
 # Initialize configuration
 webserv_parser = RawConfigParser()
@@ -62,10 +64,14 @@ with open(os.path.expanduser(defaults_file)) as cfg:
 webserv_config = dict(webserv_parser.items("webserv"))
 default_db_url = webserv_config.get("dax.webserv.db.url")
 
-# Execute this last, we can overwrite anything we don't like
+# Initialize configuration for ImageServ
+imgserv_config_path = os.path.join(app.instance_path, "imgserv")
+with app.app_context():
+    # imgserv_config_path only prep for use of instance folder later
+    imageREST_v0.imageServ_loadConfig(None, "~/.lsst/dbAuth-dbServ.ini")
 
+# Execute this last, we can overwrite anything we don't like
 app.config["default_engine"] = create_engine(default_db_url, pool_size=10)
-app.config["dax.imgserv.default_source"] = "datasets/sdss/preprocessed/dr7"
 app.config.update(webserv_config)
 
 # Extract werkzeug options, if necessary
