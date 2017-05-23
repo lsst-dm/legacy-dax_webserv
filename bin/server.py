@@ -134,6 +134,6 @@ if __name__ == '__main__':
                 debug=app.config.get("dax.webserv.debug", True),
                 **werkzeug_options
                 )
-    except Exception, e:
-        print "Problem starting the server.", str(e)
+    except Exception as e:
+        print("Problem starting the server.", str(e))
         sys.exit(1)
