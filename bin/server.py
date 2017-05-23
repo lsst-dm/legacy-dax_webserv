@@ -71,7 +71,9 @@ with app.app_context():
     imageREST_v0.imageServ_loadConfig(None, "~/.lsst/dbAuth-dbServ.ini")
 
 # Execute this last, we can overwrite anything we don't like
-app.config["default_engine"] = create_engine(default_db_url, pool_size=10)
+app.config["default_engine"] = create_engine(default_db_url,
+                                             pool_size=10,
+                                             pool_recycle=3600)
 app.config.update(webserv_config)
 
 # Extract werkzeug options, if necessary
