@@ -34,7 +34,7 @@ import sys
 
 from lsst.dax.dbserv import dbREST_v0
 from lsst.dax.imgserv import imageREST_v0
-from lsst.dax.metaserv import metaREST_v0
+from lsst.dax.metaserv import api_v0 as ms_api_v0, api_v1 as ms_api_v1
 from sqlalchemy import create_engine
 
 try:
@@ -124,7 +124,8 @@ def route_metaserv():
 
 app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0/tap')
 app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image/v0')
-app.register_blueprint(metaREST_v0.metaREST, url_prefix='/meta/v0')
+app.register_blueprint(ms_api_v0.metaREST, url_prefix='/meta/v0')
+app.register_blueprint(ms_api_v1.metaserv_api_v1, url_prefix='/meta/v1')
 
 if __name__ == '__main__':
     try:
