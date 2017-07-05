@@ -68,7 +68,7 @@ default_db_url = webserv_config.get("dax.webserv.db.url")
 imgserv_config_path = os.path.join(app.instance_path, "imgserv")
 with app.app_context():
     # imgserv_config_path only prep for use of instance folder later
-    imageREST_v0.imageServ_loadConfig(None, "~/.lsst/dbAuth-dbServ.ini")
+    imageREST_v0.load_imgserv_config(None, "~/.lsst/dbAuth-dbServ.ini")
 
 # Execute this last, we can overwrite anything we don't like
 app.config["default_engine"] = create_engine(default_db_url,
