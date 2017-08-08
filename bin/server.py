@@ -75,6 +75,7 @@ app.config["default_engine"] = create_engine(default_db_url,
                                              pool_size=10,
                                              pool_recycle=3600)
 app.config.update(webserv_config)
+app.config['JSON_SORT_KEYS'] = False
 
 # Extract werkzeug options, if necessary
 # It's okay that we put them into app.config above
