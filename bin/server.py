@@ -23,7 +23,10 @@
 """
 This is RESTful LSST Data Access Web Server. It handles /meta, /image, and /db
 
-@author  Jacek Becla, SLAC; Kenny W Lo, SLAC
+@author Jacek Becla, SLAC
+@author Brian Van Klaveren, SLAC
+@author Kenny W Lo, SLAC
+
 """
 
 from flask import Flask, request
@@ -33,7 +36,7 @@ import os
 import sys
 
 from lsst.dax.dbserv import dbREST_v0
-from lsst.dax.imgserv import imageREST_v0
+from lsst.dax.imgserv import imageREST_v0 as is_api_v0, imageREST_v1 as is_api_v1
 from lsst.dax.metaserv import api_v0 as ms_api_v0, api_v1 as ms_api_v1
 from sqlalchemy import create_engine
 
@@ -68,7 +71,8 @@ default_db_url = webserv_config.get("dax.webserv.db.url")
 imgserv_config_path = os.path.join(app.instance_path, "imgserv")
 with app.app_context():
     # imgserv_config_path only prep for use of instance folder later
-    imageREST_v0.load_imgserv_config(None, "~/.lsst/dbAuth-dbServ.ini")
+    is_api_v0.load_imgserv_config(None, "~/.lsst/dbAuth-dbServ.ini")
+    is_api_v1.load_imgserv_config(None, "~/.lsst/dbAuth-dbServ.ini")
 
 # Execute this last, we can overwrite anything we don't like
 app.config["default_engine"] = create_engine(default_db_url,
@@ -110,8 +114,8 @@ def route_imgserv():
     """Lists supported versions for /image."""
     fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
     if fmt == 'text/html':
-        return "<a href='image/v0'>v0</a>"
-    return json.dumps("v0")
+        return "<a href='image/v0'>v0</a><p><a href='image/v1'>v1</a>"
+    return json.dumps("['v0', 'v1']")
 
 
 @app.route('/meta')
@@ -123,7 +127,8 @@ def route_metaserv():
     return json.dumps("v0")
 
 app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0/tap')
-app.register_blueprint(imageREST_v0.imageREST, url_prefix='/image/v0')
+app.register_blueprint(is_api_v0.imageREST, url_prefix='/image/v0')
+app.register_blueprint(is_api_v1.imageRESTv1, url_prefix='/image/v1')
 app.register_blueprint(ms_api_v0.metaREST, url_prefix='/meta/v0')
 app.register_blueprint(ms_api_v1.metaserv_api_v1, url_prefix='/meta/v1')
 
