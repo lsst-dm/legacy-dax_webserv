@@ -35,10 +35,13 @@ import logging as log
 import os
 import sys
 
-from lsst.dax.dbserv import dbREST_v0
-from lsst.dax.imgserv import imageREST_v1 as is_api_v1
-from lsst.dax.metaserv import api_v0 as ms_api_v0, api_v1 as ms_api_v1
 from sqlalchemy import create_engine
+
+from lsst.dax.dbserv import api_v0 as dbs_api_v0
+from lsst.dax.metaserv import api_v1 as ms_api_v1
+from lsst.dax.imgserv import api_v1 as is_api_v1
+
+ACCEPT_TYPES = ["application/json", "text/html"]
 
 try:
     from ConfigParser import RawConfigParser, NoSectionError
@@ -89,47 +92,48 @@ for key, value in webserv_config.items():
         werkzeug_options[key[len(WERKZEUG_PREFIX):]] = value
 
 
-@app.route('/')
+@app.route('/api')
 def route_webserv_root():
-    fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+    fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
     if fmt == 'text/html':
-        return ("LSST Web Service here. I currently support: "
-                "<a href='meta'>/meta</a>, "
-                "<a href='image'>/image</a>, "
-                "<a href='db'>/db</a.")
-    return "LSST Web Service here. I currently support: /meta, /image, /db."
+        return ("<b>Hello, LSST Web Service here.</b> <br>"
+                "I currently support: "
+                "<a href='api/meta'>meta</a>, "
+                "<a href='api/image'>image</a>, "
+                "<a href='api/db'>db</a>.")
+        return "{'LSST Web Service. Links': ['/api/meta',\
+'/api/image', '/api/db']}"
 
 
-@app.route('/db')
+@app.route('/api/db')
 def route_dbserv():
     """Lists supported versions for /db."""
-    fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+    fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
     if fmt == 'text/html':
-        return "<a href='db/v0'>v0</a>"
-    return json.dumps("v0")
+        return ("<a href='db/v0/tap'>v0</a>")
+    return json.dumps("{'DAX DB. Links': '/api/db/v0'}")
 
 
-@app.route('/image')
+@app.route('/api/image')
 def route_imgserv():
     """Lists supported versions for /image."""
-    fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+    fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
     if fmt == 'text/html':
         return "<a href='image/v1'>v1</a>"
-    return json.dumps("['v1']")
+    return json.dumps("{'DAX Image. Links': '/api/image/v1'}")
 
 
-@app.route('/meta')
+@app.route('/api/meta')
 def route_metaserv():
     """Lists supported versions for /meta."""
-    fmt = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+    fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
     if fmt == 'text/html':
-        return "<a href='meta/v0'>v0</a>"
-    return json.dumps("v0")
+        return "<a href='meta/v1'>v1</a>"
+    return json.dumps("{'DAX Metadata. Links': '/api/meta/v1'}")
 
-app.register_blueprint(dbREST_v0.dbREST, url_prefix='/db/v0/tap')
-app.register_blueprint(is_api_v1.imageRESTv1, url_prefix='/image/v1')
-app.register_blueprint(ms_api_v0.metaREST, url_prefix='/meta/v0')
-app.register_blueprint(ms_api_v1.metaserv_api_v1, url_prefix='/meta/v1')
+app.register_blueprint(dbs_api_v0.db_api_v0, url_prefix='/api/db/v0')
+app.register_blueprint(is_api_v1.image_api_v1, url_prefix='/api/image/v1')
+app.register_blueprint(ms_api_v1.meta_api_v1, url_prefix='/api/meta/v1')
 
 if __name__ == '__main__':
     try:
