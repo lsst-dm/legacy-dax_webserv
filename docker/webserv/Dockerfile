@@ -34,6 +34,8 @@ RUN echo "Executing: eups distrib install ${EUPS_TAG:+"-t"} $EUPS_TAG $EUPS_PROD
     curl -OL https://raw.githubusercontent.com/lsst/lsst/master/scripts/newinstall.sh && \
         echo $INSTALL_MINICONDA | bash newinstall.sh -3 && \
         /bin/bash -c 'source $LSST_STACK_DIR/loadLSST.bash; \
+            # We need to install pyjwt into the environment \
+            pip install pyjwt; \
             eups distrib install ${EUPS_TAG:+"-t"} $EUPS_TAG $EUPS_PRODUCT $EUPS_PRODUCT_VERSION;'
 
 USER root
