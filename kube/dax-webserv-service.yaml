@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: dax-webserv-service
+spec:
+  selector:
+    app: dax-webserv
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
