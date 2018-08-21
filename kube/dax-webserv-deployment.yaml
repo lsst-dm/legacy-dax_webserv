@@ -21,7 +21,7 @@ spec:
         - name: WEBSERV_CONFIG
           value: "/etc/dax-webserv/webserv.ini"
         ports:
-        - containerPort: 8080
+        - containerPort: 5000 
         volumeMounts:
         - name: config
           mountPath: "/etc/dax-webserv"

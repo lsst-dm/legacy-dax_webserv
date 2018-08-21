@@ -3,7 +3,6 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   name: dax-webserv-ingress
 spec:
@@ -13,5 +12,9 @@ spec:
       paths:
       - backend:
           serviceName: dax-webserv-service
-          servicePort: 8080
-        path: /dax/webserv
+          servicePort: 5000
+        path: /api/image/v1
+      - backend:
+          serviceName: dax-webserv-service
+          servicePort: 5000
+        path: /api/meta/v1
