@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dax-webserv-deployment
+  labels:
+    app: dax-webserv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dax-webserv
+  template:
+    metadata:
+      labels:
+        app: dax-webserv
+    spec:
+      containers:
+      - name: dax-webserv
+        image: webserv/webserv:webserv_latest_3
+        env:
+        - name: WEBSERV_CONFIG
+          value: "/etc/dax-webserv/webserv.ini"
+        ports:
+        - containerPort: 5000 
+        volumeMounts:
+        - name: config
+          mountPath: "/etc/dax-webserv"
+          readOnly: true
+        - name: datasets
+          mountPath: "/datasets"
+          readOnly: true
+      volumes:
+      - name: config
+        secret:
+          secretName: dax-webserv-config
+      - name: datasets
+        persistentVolumeClaim:
+          claimName: dax-webserv-datasets-claim
