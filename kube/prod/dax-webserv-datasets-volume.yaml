@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: dax-webserv-datasets-volume
+  name: dax-prod-webserv-datasets-volume
   annotations:
     volume.beta.kubernetes.io/mount-options: local_lock=all
 spec:
