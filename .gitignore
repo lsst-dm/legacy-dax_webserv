@@ -14,3 +14,4 @@ doc/html
 doc/xml
 doc/*.tag
 python/lsst/__init__.pyc
+webserv.ini
