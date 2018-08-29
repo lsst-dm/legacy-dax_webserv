@@ -8,4 +8,4 @@ spec:
   resources:
     requests:
       storage: 1090Ti
-  volumeName: dax-prod-webserv-datasets-volume
+  volumeName: dax-dev-webserv-datasets-volume
