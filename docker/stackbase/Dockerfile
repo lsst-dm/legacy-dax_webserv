@@ -1,8 +1,11 @@
 FROM lsstsqre/centos:7-stack-lsst_distrib-w_2018_33
 MAINTAINER Christine Banek <cbanek@lsst.org>
 
-COPY bake.sh /home/lsst/bake.sh
-RUN /home/lsst/bake.sh
+USER root
+
+# Configure nginx
+COPY etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY etc/nginx/sites-enabled/webserv /etc/nginx/sites-enabled/webserv
 
 # Bring in ENTRYPOINT
 COPY webserv/entrypoint.sh /webserv/entrypoint.sh
@@ -11,3 +14,7 @@ COPY webserv/entrypoint.sh /webserv/entrypoint.sh
 # entrypoint does a `su webserv` internally to start wsgi as
 # as webserv
 ENTRYPOINT /webserv/entrypoint.sh
+
+# Install packages and run additional commands.
+COPY bake.sh /root/bake.sh
+RUN /root/bake.sh

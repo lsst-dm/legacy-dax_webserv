@@ -1,3 +1,3 @@
 #!/bin/bash -ex
 
-docker build -t webserv/stackbase stackbase
+docker build --no-cache -t webserv/stackbase stackbase

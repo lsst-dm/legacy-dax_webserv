@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Start nginx
+nginx
 
-/etc/init.d/nginx start
-
-# Activacte Stack, setup dax_webserv, and run uwsgi
-su webserv -c'\
-source /lsst/stack/loadLSST.bash; \
-setup dax_webserv; \
+# Activacte Stack, setup dax_webserv, and run
+# uwsgi under the lsst UID.
+source /opt/lsst/software/stack/loadLSST.bash
+setup lsst_distrib
 uwsgi --master --processes 40 --threads 1 \
-    --socket /tmp/webserv.sock \
-    --wsgi-file $DAX_WEBSERV_DIR/bin/server.py --callable app 2> /webserv/log.txt'
+    --socket /tmp/webserv.sock --uid lsst \
+    --callable app --need-app \
+    --wsgi-file /root/dax_webserv/bin/server.py
