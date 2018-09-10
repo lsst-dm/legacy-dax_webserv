@@ -1,3 +1,4 @@
+#TODO(DM-15620): Have this follow the latest stack image.
 FROM lsstsqre/centos:7-stack-lsst_distrib-w_2018_33
 MAINTAINER Christine Banek <cbanek@lsst.org>
 
