@@ -1,0 +1,10 @@
+server {
+    listen 5000 default_server;
+    server_name _;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_read_timeout 7200;
+        uwsgi_pass unix:///tmp/webserv.sock;
+    }
+}
