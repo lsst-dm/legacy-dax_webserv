@@ -1,5 +1,5 @@
-#TODO(DM-15620): Have this follow the latest stack image.
-FROM lsstsqre/centos:7-stack-lsst_distrib-w_2018_33
+# Build this based on the last successful weekly stack build.
+FROM lsstsqre/centos:w_latest
 MAINTAINER Christine Banek <cbanek@lsst.org>
 
 USER root
