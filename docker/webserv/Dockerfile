@@ -47,8 +47,8 @@ COPY etc/nginx/sites-enabled/webserv /etc/nginx/sites-enabled/webserv
 # Setup uwsgi. Note that Ubuntu uwsgi seems to have issues
 # This is a hack. This will install uwsgi in Miniconda's
 # site-packages
-RUN /bin/bash -c 'source $LSST_STACK_DIR/loadLSST.bash; \
-    pip install uwsgi'
+# RUN /bin/bash -c 'source $LSST_STACK_DIR/loadLSST.bash; \
+#  pip install uwsgi'
 
 # Bring in ENTRYPOINT
 COPY webserv/entrypoint.sh /webserv/entrypoint.sh
