@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 MAINTAINER Brian Van Klaveren <bvan@slac.stanford.edu>
 
 RUN apt-get --yes update && \
@@ -10,6 +10,8 @@ RUN apt-get --yes update && \
         flex \
         g++ \
         gettext \
+        vim \
+        rsync \
         git \
         libbz2-dev \
         libglib2.0-dev \
@@ -23,7 +25,7 @@ RUN apt-get --yes update && \
         openjdk-8-jre-headless \
         openssl \
         patch \
-        python-dev \
-        python-setuptools \
+        python3-dev \
+        python3-setuptools \
         zlib1g-dev &&\
         apt-get -y clean
