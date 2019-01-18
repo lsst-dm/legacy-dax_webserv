@@ -71,7 +71,6 @@ if [ $EUPS_TAG ]  ; then
 fi
 
 # Build the release image
-
-printf "Building base image with tag: %s\n" $TAG
+printf "Building webserv image with tag: %s\n" $TAG
 
 docker build --no-cache ${EUPS_TAG:+"--build-arg"} $EUPS_TAG --tag="$TAG" webserv

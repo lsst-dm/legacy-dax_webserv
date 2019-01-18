@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # LSST Data Management System
-# Copyright 2019-2015 AURA/LSST.
+# Copyright 2019, 2015 AURA/LSST.
 #
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
@@ -23,10 +23,6 @@
 """
 This is RESTful LSST Data Access Web Server. It handles /meta, /image, and /db
 
-@author Jacek Becla, SLAC
-@author Brian Van Klaveren, SLAC
-@author Kenny W Lo, SLAC
-
 """
 
 from flask import Flask, request
@@ -37,8 +33,9 @@ import sys
 
 from sqlalchemy import create_engine
 
-from lsst.dax.metaserv import api_v1 as ms_api_v1
 from lsst.dax.imgserv import api_v1 as is_api_v1
+from lsst.dax.imgserv import api_soda as is_api_soda
+from lsst.dax.metaserv import api_v1 as ms_api_v1
 
 from configparser import RawConfigParser
 
@@ -64,14 +61,14 @@ with open(os.path.expanduser(defaults_file)) as cfg:
     webserv_parser.readfp(cfg, defaults_file)
 
 webserv_config = dict(webserv_parser.items("webserv"))
-default_db_url = webserv_config.get("dax.webserv.db.url")
 default_imgserv_meta_url = webserv_config.get("dax.imgserv.meta.url")
+default_db_url = webserv_config.get("dax.webserv.db.url")
 
 # Initialize configuration for ImageServ
 imgserv_config_path = os.path.join(app.instance_path, "imgserv")
 with app.app_context():
     # imgserv_config_path only prep for use of instance folder later
-    is_api_v1.load_imgserv_config(None, default_imgserv_meta_url)
+    is_api_soda.load_imgserv_config(None, default_imgserv_meta_url)
 
 # Execute this last, we can overwrite anything we don't like
 app.config["default_engine"] = create_engine(default_db_url,
@@ -89,15 +86,14 @@ for key, value in webserv_config.items():
 
 
 @app.route('/api')
+@app.route('/')
 def route_webserv_root():
     fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
     if fmt == 'text/html':
-        return ("<b>Hello, LSST Web Service here.</b> <br>"
-                "I currently support: "
-                "<a href='api/meta'>meta</a>, "
-                "<a href='api/image'>image</a>, "
-                "<a href='api/db'>db</a>.")
-    return "{'LSST Web Service. Links': ['/api/meta','/api/image']}"
+        return ("<b>Hello, LSST Image Service here.</b> <br>"
+                "I support: "
+                "<a href='api/image'>image</a>")
+    return "{'LSST Image Service. Links': ['/api/image']}"
 
 
 @app.route('/api/image')
@@ -105,18 +101,12 @@ def route_imgserv():
     """Lists supported versions for /image."""
     fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
     if fmt == 'text/html':
-        return "<a href='image/v1'>v1</a>"
-    return json.dumps("{'DAX Image. Links': '/api/image/v1'}")
+        return "<a href='image/soda'>SODA</a>"
+    return json.dumps("{'DAX Image. Links': ['/api/image/v1',"
+                      "'/api/image/soda']}")
 
 
-@app.route('/api/meta')
-def route_metaserv():
-    """Lists supported versions for /meta."""
-    fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
-    if fmt == 'text/html':
-        return "<a href='meta/v1'>v1</a>"
-    return json.dumps("{'DAX Metadata. Links': '/api/meta/v1'}")
-
+app.register_blueprint(is_api_soda.image_soda, url_prefix='/api/image/soda')
 app.register_blueprint(is_api_v1.image_api_v1, url_prefix='/api/image/v1')
 app.register_blueprint(ms_api_v1.meta_api_v1, url_prefix='/api/meta/v1')
 
@@ -129,5 +119,5 @@ if __name__ == '__main__':
                 **werkzeug_options
                 )
     except Exception as e:
-        print("Problem starting the server.", str(e))
+        print("Problem starting the Image Server.", str(e))
         sys.exit(1)

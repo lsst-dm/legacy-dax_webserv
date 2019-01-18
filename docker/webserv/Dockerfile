@@ -44,11 +44,8 @@ RUN apt-get update && apt-get --yes install nginx
 COPY etc/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY etc/nginx/sites-enabled/webserv /etc/nginx/sites-enabled/webserv
 
-# Setup uwsgi. Note that Ubuntu uwsgi seems to have issues
-# This is a hack. This will install uwsgi in Miniconda's
-# site-packages
-# RUN /bin/bash -c 'source $LSST_STACK_DIR/loadLSST.bash; \
-#  pip install uwsgi'
+# Setup uwsgi
+RUN /bin/bash -c 'source $LSST_STACK_DIR/loadLSST.bash; LDFLAGS=-fno-lto pip install uwsgi'
 
 # Bring in ENTRYPOINT
 COPY webserv/entrypoint.sh /webserv/entrypoint.sh
