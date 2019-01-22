@@ -41,7 +41,7 @@ from lsst.dax.dbserv import api_v0 as dbs_api_v0
 from lsst.dax.metaserv import api_v1 as ms_api_v1
 from lsst.dax.imgserv import api_v1 as is_api_v1
 
-from ConfigParser import RawConfigParser, NoSectionError
+from configparser import RawConfigParser, NoSectionError
 
 ACCEPT_TYPES = ["application/json", "text/html"]
 

@@ -35,7 +35,7 @@ from sqlalchemy import create_engine
 
 from lsst.dax.imgserv import api_soda as is_api_soda
 
-from ConfigParser import RawConfigParser, NoSectionError
+from configparser import RawConfigParser, NoSectionError
 
 ACCEPT_TYPES = ["application/json", "text/html"]
 
@@ -59,13 +59,18 @@ with open(os.path.expanduser(defaults_file)) as cfg:
     webserv_parser.readfp(cfg, defaults_file)
 
 webserv_config = dict(webserv_parser.items("webserv"))
+default_imgserv_meta_url = webserv_config.get("dax.imgserv.meta.url")
 
 # Initialize configuration for ImageServ
 imgserv_config_path = os.path.join(app.instance_path, "imgserv")
 with app.app_context():
     # imgserv_config_path only prep for use of instance folder later
-    is_api_v1.load_imgserv_config(None, default_imgserv_meta_url)
+    is_api_soda.load_imgserv_config(None, default_imgserv_meta_url)
 
+# Execute this last, we can overwrite anything we don't like
+app.config["default_engine"] = create_engine(default_db_url,
+                                             pool_size=10,
+                                             pool_recycle=3600)
 app.config.update(webserv_config)
 
 # Extract werkzeug options, if necessary
@@ -81,13 +86,10 @@ for key, value in webserv_config.items():
 def route_webserv_root():
     fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
     if fmt == 'text/html':
-        return ("<b>Hello, LSST Web Service here.</b> <br>"
-                "I currently support: "
-                "<a href='api/meta'>meta</a>, "
-                "<a href='api/image'>image</a>, "
-                "<a href='api/db'>db</a>.")
-    return "{'LSST Web Service. Links': ['/api/meta',\
-'/api/image', '/api/db']}"
+        return ("<b>Hello, LSST Image Service here.</b> <br>"
+                "I support: "
+                "<a href='api/image'>image</a>")
+    return "{'LSST Image Service. Links': ['/api/image']}"
 
 
 @app.route('/api/image')
@@ -110,5 +112,5 @@ if __name__ == '__main__':
                 **werkzeug_options
                 )
     except Exception as e:
-        print("Problem starting the server.", str(e))
+        print("Problem starting the Image Server.", str(e))
         sys.exit(1)
