@@ -7,7 +7,7 @@ metadata:
   name: dax-webserv-ingress
 spec:
   rules:
-  - host: lsst-lsp-int.ncsa.illinois.edu
+  - host: lsst-lsp-stable.ncsa.illinois.edu
     http:
       paths:
       - backend:

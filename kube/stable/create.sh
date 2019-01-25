@@ -1,5 +1,5 @@
 #!/bin/bash -ex
-DAX_NAMESPACE=${DAX_NAMESPACE:-'dax-prod'}
+DAX_NAMESPACE=${DAX_NAMESPACE:-'dax-stable'}
 
 kubectl create -f dax-webserv-datasets-volume.yaml
 kubectl create -f dax-webserv-datasets-claim.yaml --namespace $DAX_NAMESPACE
