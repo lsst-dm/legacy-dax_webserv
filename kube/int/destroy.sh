@@ -1,5 +1,5 @@
 #!/bin/bash -x
-DAX_NAMESPACE=${DAX_NAMESPACE:-'dax-dev'}
+DAX_NAMESPACE=${DAX_NAMESPACE:-'dax-int'}
 
 kubectl delete ingress dax-webserv-ingress --namespace $DAX_NAMESPACE
 kubectl delete service dax-webserv-service --namespace $DAX_NAMESPACE
