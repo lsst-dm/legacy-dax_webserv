@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # LSST Data Management System
-# Copyright 2015 AURA/LSST.
+# Copyright 2019-2015 AURA/LSST.
 #
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
@@ -37,11 +37,10 @@ import sys
 
 from sqlalchemy import create_engine
 
-from lsst.dax.dbserv import api_v0 as dbs_api_v0
 from lsst.dax.metaserv import api_v1 as ms_api_v1
 from lsst.dax.imgserv import api_v1 as is_api_v1
 
-from configparser import RawConfigParser, NoSectionError
+from configparser import RawConfigParser
 
 ACCEPT_TYPES = ["application/json", "text/html"]
 
@@ -98,17 +97,7 @@ def route_webserv_root():
                 "<a href='api/meta'>meta</a>, "
                 "<a href='api/image'>image</a>, "
                 "<a href='api/db'>db</a>.")
-        return "{'LSST Web Service. Links': ['/api/meta',\
-'/api/image', '/api/db']}"
-
-
-@app.route('/api/db')
-def route_dbserv():
-    """Lists supported versions for /db."""
-    fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
-    if fmt == 'text/html':
-        return ("<a href='db/v0/tap'>v0</a>")
-    return json.dumps("{'DAX DB. Links': '/api/db/v0'}")
+    return "{'LSST Web Service. Links': ['/api/meta','/api/image']}"
 
 
 @app.route('/api/image')
@@ -128,7 +117,6 @@ def route_metaserv():
         return "<a href='meta/v1'>v1</a>"
     return json.dumps("{'DAX Metadata. Links': '/api/meta/v1'}")
 
-app.register_blueprint(dbs_api_v0.db_api_v0, url_prefix='/api/db/v0')
 app.register_blueprint(is_api_v1.image_api_v1, url_prefix='/api/image/v1')
 app.register_blueprint(ms_api_v1.meta_api_v1, url_prefix='/api/meta/v1')
 

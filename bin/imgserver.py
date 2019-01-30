@@ -60,6 +60,7 @@ with open(os.path.expanduser(defaults_file)) as cfg:
 
 webserv_config = dict(webserv_parser.items("webserv"))
 default_imgserv_meta_url = webserv_config.get("dax.imgserv.meta.url")
+default_db_url = webserv_config.get("dax.webserv.db.url")
 
 # Initialize configuration for ImageServ
 imgserv_config_path = os.path.join(app.instance_path, "imgserv")
@@ -83,6 +84,7 @@ for key, value in webserv_config.items():
 
 
 @app.route('/api')
+@app.route('/')
 def route_webserv_root():
     fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
     if fmt == 'text/html':
@@ -97,7 +99,7 @@ def route_imgserv():
     """Lists supported versions for /image."""
     fmt = request.accept_mimetypes.best_match(ACCEPT_TYPES)
     if fmt == 'text/html':
-        return "<a href='image/soda'>v1</a>"
+        return "<a href='image/soda'>SODA</a>"
     return json.dumps("{'DAX Image. Links': '/api/image/soda'}")
 
 
