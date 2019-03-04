@@ -33,9 +33,11 @@ import sys
 
 from sqlalchemy import create_engine
 
+from lsst.dax.imgserv import api_v1 as is_api_v1
 from lsst.dax.imgserv import api_soda as is_api_soda
+from lsst.dax.metaserv import api_v1 as ms_api_v1
 
-from configparser import RawConfigParser, NoSectionError
+from configparser import RawConfigParser
 
 ACCEPT_TYPES = ["application/json", "text/html"]
 
@@ -103,7 +105,9 @@ def route_imgserv():
     return json.dumps("{'DAX Image. Links': '/api/image/soda'}")
 
 
-app.register_blueprint(is_api_soda.image_api_soda, url_prefix='/api/image/soda')
+app.register_blueprint(is_api_soda.app, url_prefix='/api/image/soda')
+app.register_blueprint(is_api_v1.image_api_v1, url_prefix='/api/image/v1')
+app.register_blueprint(ms_api_v1.meta_api_v1, url_prefix='/api/meta/v1')
 
 if __name__ == '__main__':
     try:
