@@ -20,12 +20,9 @@ RUN apt-get --yes update && \
         libssl-dev \
         libsm6 \
         make \
-        python-numpy \
         ncurses-dev \
-        openjdk-8-jre-headless \
         openssl \
         patch \
-        python3-dev \
-        python3-setuptools \
+        python-dev \
         zlib1g-dev &&\
         apt-get -y clean
