@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: dax-webserv
-        image: webserv/webserv:webserv_latest_3
+        image: webserv/webserv:webserv_latest_soda
         env:
         - name: WEBSERV_CONFIG
           value: "/etc/dax-webserv/webserv.ini"
