@@ -37,6 +37,8 @@ RUN echo "Executing: eups distrib install ${EUPS_TAG:+"-t"} $EUPS_TAG $EUPS_PROD
             eups distrib install ${EUPS_TAG:+"-t"} $EUPS_TAG $EUPS_PRODUCT $EUPS_PRODUCT_VERSION;'
 
 USER root
+# install pymysql
+RUN /bin/bash -c 'source $LSST_STACK_DIR/loadLSST.bash; pip install pymysql'
 
 # Webserv parts...
 # Setup nginx
