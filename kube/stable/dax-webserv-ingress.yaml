@@ -13,8 +13,4 @@ spec:
       - backend:
           serviceName: dax-webserv-service
           servicePort: 5000
-        path: /api/image
-      - backend:
-          serviceName: dax-webserv-service
-          servicePort: 5000
         path: /api/meta/v1
